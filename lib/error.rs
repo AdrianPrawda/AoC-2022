@@ -1,5 +1,5 @@
 use core::fmt;
-use std::{error::{self, Error}, str::FromStr};
+use std::{error::{self, Error}, str::FromStr, num::ParseIntError};
 
 // Master Error / InternalSystemError
 
@@ -37,6 +37,18 @@ impl From<SolutionNotImplementedError> for InternalSystemError {
 impl From<SolutionError> for InternalSystemError {
     fn from(value: SolutionError) -> Self {
         InternalSystemError::SolutionErr(value)
+    }
+}
+
+impl From<std::io::Error> for InternalSystemError {
+    fn from(value: std::io::Error) -> Self {
+        InternalSystemError::SolutionErr(SolutionError::new(None, Some(Box::new(value)) ))
+    }
+}
+
+impl From<ParseIntError> for InternalSystemError {
+    fn from(value: ParseIntError) -> Self {
+        InternalSystemError::SolutionErr(SolutionError::new(None,Some(Box::new(value))))
     }
 }
 
@@ -84,6 +96,13 @@ impl error::Error for SolutionNotImplementedError { }
 
 // SolutionError
 
+#[macro_export]
+macro_rules! solution_err_mssg {
+    ($err_mssg: literal) => {
+        Err(SolutionError::new( Some(String::from_str($err_mssg).unwrap()), None ).into())
+    };
+}
+
 #[derive(Debug)]
 pub struct SolutionError {
     mssg: Option<String>,
@@ -108,4 +127,12 @@ impl fmt::Display for SolutionError {
     }
 }
 
-impl error::Error for SolutionError { }
+impl error::Error for SolutionError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        self.err.as_deref()
+    }
+
+    fn cause(&self) -> Option<&dyn Error> {
+        self.source()
+    }
+}
