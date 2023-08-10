@@ -8,6 +8,7 @@ pub enum InternalSystemError {
     CLIArgs(CLIArgsError),
     SolutionNotImplemented(SolutionNotImplementedError),
     SolutionErr(SolutionError),
+    Conversion(ConversionError),
 }
 
 impl fmt::Display for InternalSystemError {
@@ -16,6 +17,7 @@ impl fmt::Display for InternalSystemError {
             InternalSystemError::CLIArgs(ref e) => e.fmt(f),
             InternalSystemError::SolutionNotImplemented(ref e) => e.fmt(f),
             InternalSystemError::SolutionErr(ref e) => e.fmt(f),
+            InternalSystemError::Conversion(ref e) => e.fmt(f),
         }
     }
 }
@@ -37,6 +39,12 @@ impl From<SolutionNotImplementedError> for InternalSystemError {
 impl From<SolutionError> for InternalSystemError {
     fn from(value: SolutionError) -> Self {
         InternalSystemError::SolutionErr(value)
+    }
+}
+
+impl From<ConversionError> for InternalSystemError {
+    fn from(value: ConversionError) -> Self {
+        InternalSystemError::Conversion(value)
     }
 }
 
@@ -93,6 +101,31 @@ impl fmt::Display for SolutionNotImplementedError {
 }
 
 impl error::Error for SolutionNotImplementedError { }
+
+// ConversionError
+
+#[derive(Debug)]
+pub struct ConversionError {
+    from: String,
+    into: String,
+}
+
+impl ConversionError {
+    pub fn new(from: &str, into: &str) -> Self {
+        ConversionError { 
+            from: String::from_str(from).unwrap(), 
+            into: String::from_str(into).unwrap()
+        }
+    }
+}
+
+impl fmt::Display for ConversionError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Couldn't convert from {} into {}", self.from, self.into)
+    }
+}
+
+impl error::Error for ConversionError { }
 
 // SolutionError
 

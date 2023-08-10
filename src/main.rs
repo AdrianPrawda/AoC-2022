@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use aoc_2022_lib::{error::{CLIArgsError, InternalSystemError, SolutionNotImplementedError}, Solution, solution::Question1};
+use aoc_2022_lib::{error::{CLIArgsError, InternalSystemError, SolutionNotImplementedError}, Solution, solution::{Question1, Question2}};
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -30,7 +30,8 @@ fn main() -> Result<(), InternalSystemError> {
 
     let solutions: Vec<Box<dyn Solution>> = vec![
         // put solutions in here
-        Box::new(Question1::new())
+        Box::new(Question1::new()),
+        Box::new(Question2{}),
     ];
 
     let solution = solutions.iter().filter(
