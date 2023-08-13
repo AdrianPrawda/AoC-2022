@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use aoc_2022_lib::{error::{CLIArgsError, InternalSystemError, SolutionNotImplementedError}, Solution, solution::{Question1, Question2}};
+use aoc_2022_lib::{error::{CLIArgsError, InternalSystemError, SolutionNotImplementedError}, Solution, solution::{Question1, Question2, Question3}};
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -32,6 +32,7 @@ fn main() -> Result<(), InternalSystemError> {
         // put solutions in here
         Box::new(Question1::new()),
         Box::new(Question2{}),
+        Box::new(Question3{}),
     ];
 
     let solution = solutions.iter().filter(
