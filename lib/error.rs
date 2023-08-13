@@ -146,6 +146,12 @@ impl SolutionError {
     pub fn new(mssg: Option<String>, err: Option<Box<dyn Error>>) -> Self {
         SolutionError { mssg, err }
     }
+
+    pub fn from_str(mssg: &str) -> Self {
+        SolutionError { mssg:Some(String::from_str(mssg).unwrap()), err: None }
+    }
+
+    // TODO: implement constructor for impl Error
 }
 
 impl fmt::Display for SolutionError {
